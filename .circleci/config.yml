@@ -89,7 +89,7 @@ jobs:
     steps:
       - checkout
       - run:
-          name: Test front-end
+          name: scan front-end dependencies
           command: |
             cd frontend
             npm install
@@ -101,7 +101,7 @@ jobs:
     steps:
       - checkout
       - run:
-          name: Test back-end
+          name: scan back-end dependencies 
           command: |
             cd backend
             npm install
