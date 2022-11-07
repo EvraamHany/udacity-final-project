@@ -54,8 +54,6 @@ jobs:
       - checkout
       - run:
           name: Back-end build
-      - run:
-          name: Back-end build
           command: |
             cd backend
             npm install
