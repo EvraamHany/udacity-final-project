@@ -1,1 +1,3 @@
 [web]
+53.88.194.83
+ec2-3-88-194-83.compute-1.amazonaws.com
