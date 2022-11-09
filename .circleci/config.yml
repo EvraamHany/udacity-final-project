@@ -10,8 +10,7 @@ commands:
           name: Destroy environments
           when: on_fail
           command: |
-            # Your code here
-            exit 1
+            echo "Destroying environment: << parameters.workflow_id >> "
 
   revert-migrations:
     description: Revert the last migration if successfully run in the current workflow.
@@ -248,6 +247,7 @@ jobs:
               else
                 return 1
               fi
+      - destroy_environment
        # Here's where you will add some code to rollback on failure
 
 #   cloudfront-update:
