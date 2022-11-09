@@ -118,14 +118,14 @@ jobs:
             aws cloudformation deploy \
                 --template-file .circleci/files/backend.yml \
                 --tags project=udapeople \
-                --stack-name "udapeople-${CIRCLE_WORKFLOW_ID:0:7}" \
+                --stack-name "udapeople-gtrevdgrtehd" \
                 --parameter-overrides ID=${CIRCLE_WORKFLOW_ID:0:7}
        - run:
            name: Ensure front-end infrastructure exist
            command: |
              aws cloudformation deploy \
               --template-file .circleci/files/frontend.yml \
-              --stack-name "udapeople-frontend-${CIRCLE_WORKFLOW_ID:0:7}" \
+              --stack-name "udapeople-louthfytbdfr" \
               --parameter-overrides ID="${CIRCLE_WORKFLOW_ID:0:7}"  \
               --tags project=udapeople
 #       - run:
