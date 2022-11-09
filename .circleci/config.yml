@@ -189,22 +189,26 @@ jobs:
             # aws s3 sync dist s3://udapeople-project
             aws s3 cp dist s3://udapeople-297de3e --recursive
 
-#   deploy-backend:
-#     docker:
-#       # Docker image here that supports Ansible
-#     steps:
-#       # Checkout code from git
-#       # Add ssh keys with fingerprint
-#       # attach workspace
-#       - run:
-#           name: Install dependencies
-#           command: |
-#             # your code here
-#       - run:
-#           name: Deploy backend
-#           command: |
-#             # your code here
-#       # Here's where you will add some code to rollback on failure
+  deploy-backend:
+    docker:
+      - image: mareimorsy/aws-node
+    steps:
+      - checkout
+      - add_ssh_keys:
+          fingerprints: ["27:6f:ff:4a:6e:a7:96:df:bd:21:d4:07:60:ed:06:2e"]
+      - run:
+          name: Deploy backend
+          command: |
+            export TYPEORM_HOST=$(aws ec2 describe-instances --region us-east-1 --query 'Reservations[*].Instances[*].PublicIpAddress' --output text)
+            echo $TYPEORM_HOST >> .circleci/ansible/inventory.txt
+            cd backend
+            npm i
+            npm run build
+            tar -czf artifact.tar.gz dist/* package*
+            cp artifact.tar.gz ~/project/.circleci/ansible/roles/deploy/artifact.tar.gz
+            ls ../.circleci/ansible/roles/deploy/
+            cd ../.circleci/ansible
+            ansible-playbook -i inventory.txt deploy-backend.yml
 
 #   smoke-test:
 #     docker:
@@ -286,7 +290,7 @@ workflows:
 #          requires: [deploy-infrastructure]
 #      - run-migrations:
 #          requires: [deploy-infrastructure]
-      - deploy-frontend:
+      - deploy-backend:
           requires: [deploy-infrastructure]
       # - deploy-backend:
       #     requires: [run-migrations]
