@@ -12,7 +12,7 @@ commands:
           name: Destroy environment
           when: on_fail
           command: |
-            echo ${parameters.workflow_id}
+            echo "destroy work flow"
 
   revert-migrations:
     description: Revert the last migration
