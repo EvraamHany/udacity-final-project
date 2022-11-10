@@ -12,7 +12,9 @@ commands:
           name: Destroy environment
           when: on_fail
           command: |
-            echo "Destroying environment: << parameters.workflow_id >> "
+            aws cloudformation delete-stack --stack-name backend-${CIRCLE_WORKFLOW_ID:0:5}
+            aws s3 rm s3://udapeople-<<parameters.Workflow_ID>> --recursive
+            aws cloudformation delete-stack --stack-name frontend-<< parameters.Workflow_ID >>
 
   revert-migrations:
     description: Revert the last migration
@@ -25,14 +27,14 @@ commands:
           name: Revert migrations
           when: on_fail
           command: |
-            SUCCESS=$(curl --insecure  https://kvdb.io/${KVDB_BUCKET}/migration_<< parameters.Workflow_ID >>)
-            echo "$SUCCESS"
+            SUCCESS=$(curl -H "token: e52b52de-ee26-41a5-86e8-e8dcc3d995a5" --request GET https://api.memstash.io/values/migration_<< parameters.workflow_id >>)
+            SUCCESS=$(curl --insecure  https://kvdb.io/9GE4jRtKznmVKRfvdBABBe/migration_<< parameters.workflow_id >>)
             # Logic for reverting the database state
             if (( $SUCCESS == 1 ));
             then
-              cd ~/project/backend
-              npm install
-              npm run migration:revert
+                cd ~/project/backend
+                npm install
+                npm run migration:revert
             fi
 #  destroy-environment:
 #    description: Destroy back-end and front-end cloudformation stacks given a workflow ID.
@@ -285,7 +287,7 @@ jobs:
               else
                 return 1
               fi
-      - destroy-environment
+#      - destroy-environment
       - revert-migrations
        # Here's where you will add some code to rollback on failure
 
