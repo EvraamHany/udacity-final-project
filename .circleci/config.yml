@@ -205,7 +205,6 @@ jobs:
           command: |
             cd backend
             npm install
-#            npm run premigrations
             npm run migrations
 
   deploy-frontend:
