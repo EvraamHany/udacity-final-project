@@ -149,30 +149,30 @@ jobs:
        - image: amazon/aws-cli
      steps:
        - checkout
-#       - run:
-#           name: Ensure back-end infrastructure exist
-#           command: |
-#             aws cloudformation deploy \
-#             --template-file .circleci/files/backend.yml \
-#             --stack-name "udapeople-backend-${CIRCLE_WORKFLOW_ID:0:7}" \
-#             --parameter-overrides ID="${CIRCLE_WORKFLOW_ID:0:7}"  \
-#             --tags project=udapeople
-#       - run:
-#           name: Ensure front-end infrastructure exist
-#           command: |
-#             aws cloudformation deploy \
-#             --template-file .circleci/files/frontend.yml \
-#             --stack-name "udapeople-frontend-${CIRCLE_WORKFLOW_ID:0:7}" \
-#             --parameter-overrides ID="${CIRCLE_WORKFLOW_ID:0:7}"  \
-#             --tags project=udapeople
-#       - run:
-#           name: Add back-end ip to ansible inventory
-#           command: |
-#             aws ec2 describe-instances --region us-east-1 --query 'Reservations[*].Instances[*].PublicIpAddress' --output text >> .circleci/ansible/inventory.txt
-#       - persist_to_workspace:
-#           root: ~/
-#           paths:
-#             - project/.circleci/ansible/inventory.txt
+       - run:
+           name: Ensure back-end infrastructure exist
+           command: |
+             aws cloudformation deploy \
+             --template-file .circleci/files/backend.yml \
+             --stack-name "udapeople-backend-${CIRCLE_WORKFLOW_ID:0:7}" \
+             --parameter-overrides ID="${CIRCLE_WORKFLOW_ID:0:7}"  \
+             --tags project=udapeople
+       - run:
+           name: Ensure front-end infrastructure exist
+           command: |
+             aws cloudformation deploy \
+             --template-file .circleci/files/frontend.yml \
+             --stack-name "udapeople-frontend-${CIRCLE_WORKFLOW_ID:0:7}" \
+             --parameter-overrides ID="${CIRCLE_WORKFLOW_ID:0:7}"  \
+             --tags project=udapeople
+       - run:
+           name: Add back-end ip to ansible inventory
+           command: |
+             aws ec2 describe-instances --region us-east-1 --query 'Reservations[*].Instances[*].PublicIpAddress' --output text >> .circleci/ansible/inventory.txt
+       - persist_to_workspace:
+           root: ~/
+           paths:
+             - project/.circleci/ansible/inventory.txt
 
 
   configure-infrastructure:
@@ -197,7 +197,7 @@ jobs:
 
   run-migrations:
     docker:
-      - image: mareimorsy/aws-node
+      - image: circleci/node:13.8.0
     steps:
       - checkout
       - run:
@@ -209,7 +209,7 @@ jobs:
 
   deploy-frontend:
     docker:
-      - image: mareimorsy/aws-node
+      - image: circleci/node:13.8.0
     steps:
       - checkout
       - run:
@@ -227,7 +227,7 @@ jobs:
 
   deploy-backend:
     docker:
-      - image: mareimorsy/aws-node
+      - image: circleci/node:13.8.0
     steps:
       - checkout
       - add_ssh_keys:
@@ -248,7 +248,7 @@ jobs:
 
   smoke-test:
     docker:
-      - image: mareimorsy/aws-node
+      - image: circleci/node:13.8.0
        # Lightweight Docker image
     steps:
       - checkout
@@ -287,18 +287,18 @@ jobs:
               echo "Rolling Back"
               exit 1
             fi
-#      - run:
-#          name: Frontend smoke test.
-#          command: |
-#            URL="http://udapeople-297de3e.s3-website-us-east-1.amazonaws.com/#/employees"
-#              echo ${URL}
-#              if curl -s ${URL} | grep "Welcome"
-#              then
-#                  # Change this to 0 after the job fails
-#                return 1
-#              else
-#                return 1
-#              fi
+      - run:
+          name: Frontend smoke test.
+          command: |
+            URL="http://udapeople-297de3e.s3-website-us-east-1.amazonaws.com/#/employees"
+              echo ${URL}
+              if curl -s ${URL} | grep "Welcome"
+              then
+                  # Change this to 0 after the job fails
+                return 1
+              else
+                return 1
+              fi
       - destroy-environment
       - revert-migrations
        # Here's where you will add some code to rollback on failure
@@ -308,14 +308,14 @@ jobs:
       - image: mareimorsy/aws-node
     steps:
       - checkout
-#      - run:
-#          name: Save Old Workflow ID to kvdb.io
-#          command: |
-#            export OLD_WORKFLOW_ID=$(aws cloudformation \
-#                      list-exports --query "Exports[?Name==\`WorkflowID\`].Value" \
-#                      --no-paginate --output text)
-#            echo "Old Wokflow ID: $OLD_WORKFLOW_ID"
-#            curl -k https://kvdb.io/${KVDB_BUCKET}/old_workflow_id -d "${OLD_WORKFLOW_ID}"
+      - run:
+          name: Save Old Workflow ID to kvdb.io
+          command: |
+            export OLD_WORKFLOW_ID=$(aws cloudformation \
+                      list-exports --query "Exports[?Name==\`WorkflowID\`].Value" \
+                      --no-paginate --output text)
+            echo "Old Wokflow ID: $OLD_WORKFLOW_ID"
+            curl -k https://kvdb.io/${KVDB_BUCKET}/old_workflow_id -d "${OLD_WORKFLOW_ID}"
       - run:
           name: Update cloudfront distribution
           command: |
@@ -348,32 +348,30 @@ jobs:
 workflows:
   default:
     jobs:
-#      - build-frontend
-#      - build-backend
-#      - test-frontend:
-#          requires: [build-frontend]
-#      - test-backend:
-#          requires: [build-backend]
-#      - scan-backend:
-#          requires: [build-backend]
-#      - scan-frontend:
-#          requires: [build-frontend]
-#      - deploy-infrastructure:
-#          requires: [test-frontend, test-backend, scan-frontend, scan-backend]
-      #     filters:
-      #       branches:
-      #         only: [test-feature-branch]
-#      - configure-infrastructure:
-#          requires: [deploy-infrastructure]
-#      - run-migrations:
-#          requires: [configure-infrastructure]
-      - deploy-backend
-#          requires: [run-migrations]
-      # - deploy-backend:
-      #     requires: [run-migrations]
+      - build-frontend
+      - build-backend
+      - test-frontend:
+          requires: [build-frontend]
+      - test-backend:
+          requires: [build-backend]
+      - scan-backend:
+          requires: [build-backend]
+      - scan-frontend:
+          requires: [build-frontend]
+      - deploy-infrastructure:
+          requires: [test-frontend, test-backend, scan-frontend, scan-backend]
+#           filters:
+#             branches:
+#               only: [test-feature-branch]
+      - configure-infrastructure:
+          requires: [deploy-infrastructure]
+      - run-migrations:
+          requires: [configure-infrastructure]
+      - deploy-backend:
+          requires: [run-migrations]
       - smoke-test:
-           requires: [deploy-backend]
-#       - cloudfront-update:
-      #     requires: [smoke-test]
+          requires: [deploy-backend]
+      - cloudfront-update:
+           requires: [smoke-test]
       # - cleanup:
       #     requires: [cloudfront-update]
