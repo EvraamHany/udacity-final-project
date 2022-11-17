@@ -357,6 +357,11 @@ workflows:
           filters:
             branches:
               only: [main]
+      - deploy-frontend:
+          requires: [run-migrations]
+          filters:
+            branches:
+              only: [main]
       - smoke-test:
           requires: [deploy-backend]
       - cloudfront-update:
