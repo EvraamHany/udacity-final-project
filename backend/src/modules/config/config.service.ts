@@ -58,7 +58,7 @@ export class ConfigService {
     const { error, value: validatedEnvConfig } = envVarsSchema.validate(envConfig);
 
     if (error) {
-      // throw new Error(`Config validation error: ${error.message}`);
+      throw new Error(`Config validation error: ${error.message}`);
     }
 
     return validatedEnvConfig;
