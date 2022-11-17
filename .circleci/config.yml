@@ -340,11 +340,11 @@ workflows:
           filters:
             branches:
               only: [main]
-#      - configure-infrastructure:
-#          requires: [deploy-infrastructure]
-#          filters:
-#            branches:
-#              only: [main]
+      - configure-infrastructure:
+          requires: [deploy-infrastructure]
+          filters:
+            branches:
+              only: [main]
 #      - run-migrations:
 #          requires: [configure-infrastructure]
 #          filters:
