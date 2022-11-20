@@ -147,11 +147,15 @@ jobs:
 
   configure-infrastructure:
     docker:
-      - image: mareimorsy/aws-node
+      - image: python:3.11.0rc1-alpine3.16
     steps:
       - checkout
       - add_ssh_keys:
           fingerprints: ["27:6f:ff:4a:6e:a7:96:df:bd:21:d4:07:60:ed:06:2e"]
+      - run:
+          name: "Install Dependencies"
+          command: |
+            apk add ansible gzip openssh-client
       - attach_workspace:
           at: ~/
       - run:
