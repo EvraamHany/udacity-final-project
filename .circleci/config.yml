@@ -167,7 +167,7 @@ jobs:
 
   run-migrations:
     docker:
-      - image: circleci/node:13.8.0
+      - image: mareimorsy/aws-node
     steps:
       - checkout
       - run:
