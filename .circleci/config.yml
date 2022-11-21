@@ -102,7 +102,7 @@ jobs:
           command: |
             cd frontend
             npm install
-            npm iinstall oauth-sign
+            npm install oauth-sign
             # npm run build
             npm run test
 
@@ -116,7 +116,6 @@ jobs:
       - run:
           name: Test Back-end
           command: |
-            exit 0
             cd backend
             npm run test
 
@@ -155,14 +154,14 @@ jobs:
           name: Install dependencies
           command: |
             yum install -y tar gzip
-      # - run:
-      #     name: Ensure back-end infrastructure exists
-      #     command: |
-      #       aws cloudformation deploy \
-      #         --template-file .circleci/files/backend.yml \
-      #         --tags project=udapeople \
-      #         --stack-name "backend" \
-      #         --parameter-overrides ID=${CIRCLE_WORKFLOW_ID:0:5}
+      - run:
+          name: Ensure back-end infrastructure exists
+          command: |
+            aws cloudformation deploy \
+              --template-file .circleci/files/backend.yml \
+              --tags project=udapeople \
+              --stack-name "backend" \
+              --parameter-overrides ID=${CIRCLE_WORKFLOW_ID:0:5}
 
       - run:
           name: Ensure front-end infrastructure exist
