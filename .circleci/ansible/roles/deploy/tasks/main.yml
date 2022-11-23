@@ -28,20 +28,20 @@
     TYPEORM_DATABASE: "{{ lookup('env', 'TYPEORM_DATABASE') }}"
 
 
-- name: Create Backend Directory
-  file:
-    path: /home/ubuntu/backend
-    state: directory
-
-
-- copy:
-    src: ~/project/.circleci/ansible/roles/deploy/artifact.tar.gz
-    dest: /home/ubuntu/backend
-
-- name: Extract artifact.tar.gz to EC2
-  unarchive:
-    src: artifact.tar.gz
-    dest: /home/ubuntu/backend
+#- name: Create Backend Directory
+#  file:
+#    path: /home/ubuntu/backend
+#    state: directory
+#
+#
+#- copy:
+#    src: ~/project/.circleci/ansible/roles/deploy/artifact.tar.gz
+#    dest: /home/ubuntu/backend
+#
+#- name: Extract artifact.tar.gz to EC2
+#  unarchive:
+#    src: artifact.tar.gz
+#    dest: /home/ubuntu/backend
 
 
 # - name: Enable pm2
