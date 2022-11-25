@@ -4,7 +4,7 @@ commands:
   destroy-environment:
     steps:
       - run:
-          name: Destroy environment
+          name: Destroy environment and buckets
           when: on_fail
           command: |
             aws s3 rm "s3://udapeople-${CIRCLE_WORKFLOW_ID:0:7}" --recursive
@@ -42,7 +42,7 @@ jobs:
       - restore_cache:
           keys: [frontend-build]
       - run:
-          name: Build front-end
+          name: Build front-end project
           command: |
             cd frontend
             npm install
@@ -57,7 +57,7 @@ jobs:
     steps:
       - checkout
       - run:
-          name: Back-end build
+          name: build Back-end project
           command: |
             cd backend
             npm install
@@ -145,7 +145,7 @@ jobs:
      steps:
        - checkout
        - run:
-           name: Install tar utility
+           name: Install tar utility for unzip
            command: |
              yum install -y tar gzip
        - run:
@@ -165,7 +165,7 @@ jobs:
              --parameter-overrides ID="${CIRCLE_WORKFLOW_ID:0:7}"  \
              --tags project=udapeople
        - run:
-           name: Add back-end ip to inventory
+           name: Add instance ip to inventory
            command: |
              aws ec2 describe-instances --region us-east-1 --query 'Reservations[*].Instances[*].PublicIpAddress' --output text >> .circleci/ansible/inventory.txt
        - persist_to_workspace:
@@ -225,13 +225,13 @@ jobs:
             curl -sL https://rpm.nodesource.com/setup_10.x | bash -
             yum install -y nodejs
       - run:
-          name: Get backend url
+          name: Get backend url and chek the url
           command: |
             export BACKEND_IP=$(aws ec2 describe-instances \
               --filters "Name=tag:Name,Values=backend-${CIRCLE_WORKFLOW_ID:0:7}" \
               --query 'Reservations[0].Instances[0].PublicIpAddress' | tr -d '"')
-            export API_URL="http://${BACKEND_IP}:3030"
-            echo "API_URL = ${API_URL}"
+            export BACKEND_URL="http://${BACKEND_IP}:3030"
+#            echo "API_URL = ${BACKEND_URL}"
             echo API_URL="http://${BACKEND_IP}:3030" >> frontend/.env
             cat frontend/.env
       - run:
@@ -272,15 +272,6 @@ jobs:
             # Zip the directory
             tar -C backend -czvf artifact.tar.gz .
             mkdir -p .circleci/ansible/roles/deploy/files
-            echo NODE_ENV=production > .circleci/ansible/roles/deploy/files/.env
-            echo ENVIRONMENT=production >> .circleci/ansible/roles/deploy/files/.env
-            echo TYPEORM_CONNECTION=postgres >> .circleci/ansible/roles/deploy/files/.env
-            echo TYPEORM_ENTITIES='./dist/modules/domain/*/*/*.entity.js' >> .circleci/ansible/roles/deploy/files/.env
-            echo TYPEORM_HOST=${TYPEORM_HOST} >> .circleci/ansible/roles/deploy/files/.env
-            echo TYPEORM_PORT=${TYPEORM_PORT} >> .circleci/ansible/roles/deploy/files/.env
-            echo TYPEORM_USERNAME=${TYPEORM_USERNAME} >> .circleci/ansible/roles/deploy/files/.env
-            echo TYPEORM_PASSWORD=${TYPEORM_PASSWORD} >> .circleci/ansible/roles/deploy/files/.env
-            echo TYPEORM_DATABASE=${TYPEORM_DATABASE} >> .circleci/ansible/roles/deploy/files/.env
             ls .circleci/ansible/roles/deploy/files
             cd .circleci/ansible
             echo "Contents  of the inventory.txt file is -------"
@@ -371,13 +362,11 @@ jobs:
                      --no-paginate --output text)
               echo OldWorkflowID: "${OldWorkflowID}"
               echo CIRCLE_WORKFLOW_ID "${CIRCLE_WORKFLOW_ID:0:7}"
-              # Fetch the stack names
               export STACKS=($(aws cloudformation list-stacks --query "StackSummaries[*].StackName" \
                      --stack-status-filter CREATE_COMPLETE --no-paginate --output text))
               echo Stack names: "${STACKS[@]}"
               if [[ "${CIRCLE_WORKFLOW_ID:0:7}" =~ "${OldWorkflowID}" ]]
               then
-              # your code goes here
                aws s3 rm "s3://udapeople-${OldWorkflowID}" --recursive
                aws cloudformation delete-stack --stack-name "udapeople-backend-${OldWorkflowID}"
                aws cloudformation delete-stack --stack-name "udapeople-frontend-${OldWorkflowID}"

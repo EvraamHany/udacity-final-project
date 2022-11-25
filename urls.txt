@@ -1,0 +1,14 @@
+URL0
+https://github.com/EvraamHany/udacity-final-project
+
+URL01
+https://github.com/EvraamHany/udacity-final-project/blob/main/.circleci/ansible/configure-server.yml
+
+URL02
+https://udapeople-297de3e.s3.amazonaws.com/index.html#/employees
+
+URL03
+https://us-east-1.console.aws.amazon.com/cloudfront/v3/home?region=us-east-1#/distributions
+
+URL04
+http://172.31.82.114:3030/api/status
