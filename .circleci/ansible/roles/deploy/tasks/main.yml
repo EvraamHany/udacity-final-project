@@ -9,6 +9,16 @@
     src: .env
     dest: /home/ubuntu/
 
+- name: Create Backend Directory
+  file:
+    path: /home/ubuntu/backend
+    state: directory
+
+ - name: Enable pm2
+   become: true
+   shell: |
+     sudo su -c "env PATH=$PATH:/usr/local/bin pm2 startup systemd -u ubuntu --hp /home/ubuntu"
+
 - name: "Run backend app"
   become: true
   args:
@@ -28,10 +38,6 @@
     TYPEORM_DATABASE: "{{ lookup('env', 'TYPEORM_DATABASE') }}"
 
 
-#- name: Create Backend Directory
-#  file:
-#    path: /home/ubuntu/backend
-#    state: directory
 #
 #
 #- copy:
@@ -44,7 +50,3 @@
 #    dest: /home/ubuntu/backend
 
 
-# - name: Enable pm2
-#   become: true
-#   shell: |
-#     sudo su -c "env PATH=$PATH:/usr/local/bin pm2 startup systemd -u ubuntu --hp /home/ubuntu"
