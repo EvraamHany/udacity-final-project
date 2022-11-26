@@ -241,8 +241,8 @@ jobs:
             npm run build
             tar -czvf artifact-"${CIRCLE_WORKFLOW_ID:0:7}".tar.gz dist
             aws s3 cp dist s3://udapeople-${CIRCLE_WORKFLOW_ID:0:7} --recursive
-#      - destroy-environment
-#      - revert-migrations
+      - destroy-environment
+      - revert-migrations
 
   deploy-backend:
     docker:
@@ -271,13 +271,22 @@ jobs:
             # Zip the directory
             tar -C backend -czvf artifact.tar.gz .
             mkdir -p .circleci/ansible/roles/deploy/files
+            echo NODE_ENV=production > .circleci/ansible/roles/deploy/files/.env
+            echo ENVIRONMENT=production >> .circleci/ansible/roles/deploy/files/.env
+            echo TYPEORM_CONNECTION=postgres >> .circleci/ansible/roles/deploy/files/.env
+            echo TYPEORM_ENTITIES='./dist/modules/domain/*/*/*.entity.js' >> .circleci/ansible/roles/deploy/files/.env
+            echo TYPEORM_HOST=${TYPEORM_HOST} >> .circleci/ansible/roles/deploy/files/.env
+            echo TYPEORM_PORT=${TYPEORM_PORT} >> .circleci/ansible/roles/deploy/files/.env
+            echo TYPEORM_USERNAME=${TYPEORM_USERNAME} >> .circleci/ansible/roles/deploy/files/.env
+            echo TYPEORM_PASSWORD=${TYPEORM_PASSWORD} >> .circleci/ansible/roles/deploy/files/.env
+            echo TYPEORM_DATABASE=${TYPEORM_DATABASE} >> .circleci/ansible/roles/deploy/files/.env
             ls .circleci/ansible/roles/deploy/files
             cd .circleci/ansible
             echo "Contents  of the inventory.txt file is -------"
             cat inventory.txt
             ansible-playbook -i inventory.txt deploy-backend.yml
-#      - destroy-environment
-#      - revert-migrations
+      - destroy-environment
+      - revert-migrations
 
 
   smoke-test:
@@ -319,8 +328,8 @@ jobs:
             else
               return 0
             fi
-#      - destroy-environment
-#      - revert-migrations
+      - destroy-environment
+      - revert-migrations
        # Here's where you will add some code to rollback on failure
 
 
@@ -346,8 +355,8 @@ jobs:
             --stack-name InitialStack \
             --parameter-overrides WorkflowID="${CIRCLE_WORKFLOW_ID:0:7}" \
             --tags project=udapeople
-#      - destroy-environment
-#      - revert-migrations
+      - destroy-environment
+      - revert-migrations
   cleanup:
       docker:
         - image: amazon/aws-cli
