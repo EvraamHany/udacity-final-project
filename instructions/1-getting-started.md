@@ -56,7 +56,7 @@ NODE_ENV=local
 VERSION=1
 TYPEORM_CONNECTION=postgres
 TYPEORM_MIGRATIONS_DIR=./src/migrations
-TYPEORM_ENTITIES=./src/modules/domain/**/*.entity.ts
+TYPEORM_ENTITIES=__dirname + ./src/modules/domain/**/*.entity.ts
 TYPEORM_MIGRATIONS=./src/migrations/*.ts
 
 # Things you can change if you wish...
