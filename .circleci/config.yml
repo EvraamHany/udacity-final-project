@@ -201,7 +201,7 @@ jobs:
       - run:
           name: Run migrations
           command: |
-            export TYPEORM_HOST=$(aws ec2 describe-instances --region us-east-1 --query 'Reservations[*].Instances[*].PublicIpAddress' --output text)
+            export TYPEORM_HOST=localhost
             cd backend
             npm install
             npm run premigrations
@@ -260,6 +260,7 @@ jobs:
       - run:
           name: Deploy backend
           command: |
+            export TYPEORM_HOST=localhost
             cd backend
             npm i
             npm run build
@@ -271,7 +272,7 @@ jobs:
             echo ENVIRONMENT=production >> .circleci/ansible/roles/deploy/files/.env
             echo TYPEORM_CONNECTION=postgres >> .circleci/ansible/roles/deploy/files/.env
             echo TYPEORM_ENTITIES='./dist/modules/domain/*/*/*.entity.js' >> .circleci/ansible/roles/deploy/files/.env
-            echo TYPEORM_HOST=${TYPEORM_HOST} >> .circleci/ansible/roles/deploy/files/.env
+            echo TYPEORM_HOST=localhost >> .circleci/ansible/roles/deploy/files/.env
             echo TYPEORM_PORT=${TYPEORM_PORT} >> .circleci/ansible/roles/deploy/files/.env
             echo TYPEORM_USERNAME=${TYPEORM_USERNAME} >> .circleci/ansible/roles/deploy/files/.env
             echo TYPEORM_PASSWORD=${TYPEORM_PASSWORD} >> .circleci/ansible/roles/deploy/files/.env
