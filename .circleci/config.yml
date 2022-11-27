@@ -197,14 +197,23 @@ jobs:
       - image: circleci/node:13.8.0
     steps:
       - checkout
+      - add_ssh_keys:
+          fingerprints: ["27:6f:ff:4a:6e:a7:96:df:bd:21:d4:07:60:ed:06:2e"]
+      - attach_workspace:
+          at: ~/
+      - restore_cache:
+          keys: [backend-build]
+      - run:
+          name: Install dependencies
+          command: |
+            apk add --update ansible tar gzip nodejs npm
+            pip3 install --upgrade pip
+            pip3 install --no-cache-dir awscli
       - run:
           name: Run migrations
           command: |
             export TYPEORM_HOST=localhost
             cd backend
-            pwd
-            cd ~/project/backend
-            pwd
             npm install
             npm run premigrations
             npm run migrations
