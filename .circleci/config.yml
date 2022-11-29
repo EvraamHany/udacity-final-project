@@ -205,6 +205,7 @@ jobs:
             cd backend
             npm install
             npm run build
+            exit 0
             npm run migrations
 #      - destroy-environment
 
