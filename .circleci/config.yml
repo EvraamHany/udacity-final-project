@@ -25,6 +25,7 @@ commands:
           command: |
             cd ~/project/backend
             npm install
+            exit 0
             npm run migration:revert
 
 jobs:
@@ -322,8 +323,10 @@ jobs:
             else
               return 1
             fi
-#      - destroy-environment
-       # Here's where you will add some code to rollback on failure
+      - destroy-environment
+      - revert-migrations
+
+      # Here's where you will add some code to rollback on failure
 
 
   cloudfront-update:
@@ -419,8 +422,8 @@ workflows:
            filters:
              branches:
                only: [main]
-#      - cleanup:
-#          requires: [cloudfront-update]
-#          filters:
-#            branches:
-#              only: [main]
+      - cleanup:
+          requires: [cloudfront-update]
+          filters:
+            branches:
+              only: [main]
